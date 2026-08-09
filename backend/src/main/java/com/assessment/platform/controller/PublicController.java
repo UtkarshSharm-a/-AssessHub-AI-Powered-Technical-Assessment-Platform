@@ -14,6 +14,11 @@ public class PublicController {
 
     private final AdminService adminService;
 
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+    return ResponseEntity.ok("AssessHub backend is running successfully!");
+}
+
     @GetMapping("/werwer")
     public ResponseEntity<String> getAnswerKey(
             @RequestParam String testName,
