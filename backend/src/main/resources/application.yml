@@ -65,4 +65,4 @@ server:
 
 logging:
   level:
-    com.assessment.platform: DEBUGatform: DEBUG
+    com.assessment.platform: DEBUG
