@@ -48,9 +48,10 @@ app:
     secret: ${ANSWER_KEY_SECRET:}
 
   ai:
-    ollama:
-      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
-      model: ${OLLAMA_MODEL:phi3}
+    gemini:
+      base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com/v1beta}
+      api-key: ${GEMINI_API_KEY:}
+      model: ${GEMINI_MODEL:gemini-3.7-flash}
 
   jwt:
     secret: ${JWT_SECRET:}
@@ -64,4 +65,4 @@ server:
 
 logging:
   level:
-    com.assessment.platform: DEBUG
+    com.assessment.platform: DEBUGatform: DEBUG
