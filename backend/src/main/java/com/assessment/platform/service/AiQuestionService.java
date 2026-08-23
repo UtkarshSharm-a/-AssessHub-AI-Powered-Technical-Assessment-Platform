@@ -137,15 +137,19 @@ public class AiQuestionService {
                     String.class
             );
         } catch (RestClientResponseException ex) {
-            log.error(
-                    "Gemini API returned HTTP {}",
-                    ex.getStatusCode().value()
-            );
+    String errorBody = ex.getResponseBodyAsString();
 
-            throw new BadRequestException(
-                    "Gemini AI request failed with HTTP "
-                            + ex.getStatusCode().value()
-            );
+    log.error(
+            "Gemini API returned HTTP {}. Response: {}",
+            ex.getStatusCode().value(),
+            errorBody
+    );
+
+    throw new BadRequestException(
+            "Gemini AI request failed with HTTP "
+                    + ex.getStatusCode().value()
+    );
+}
         } catch (RestClientException ex) {
             log.error(
                     "Failed to connect to Gemini API",
