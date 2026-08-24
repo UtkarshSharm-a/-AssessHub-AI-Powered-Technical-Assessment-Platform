@@ -106,7 +106,7 @@ public class AiQuestionService {
                 "generationConfig", Map.of(
                         "responseFormat", Map.of(
                                 "text", Map.of(
-                                        "mimeType", "application/json",
+                                        "mimeType", "APPLICATION_JSON",
                                         "schema", responseSchema
                                 )
                         )
