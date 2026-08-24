@@ -1,10 +1,9 @@
 package com.assessment.platform.service;
 
-import com.resend.Resend;
-import com.resend.services.emails.model.SendEmailRequest;
-import com.resend.services.emails.model.SendEmailResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -12,29 +11,34 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EmailService {
 
-    private final Resend resend;
+    private final JavaMailSender mailSender;
+    private final String fromAddress;
 
-    public EmailService(@Value("${RESEND_API_KEY}") String apiKey) {
-        this.resend = new Resend(apiKey);
+    public EmailService(
+            JavaMailSender mailSender,
+            @Value("${spring.mail.username}") String fromAddress
+    ) {
+        this.mailSender = mailSender;
+        this.fromAddress = fromAddress;
     }
 
     @Async
     public void sendOtpEmail(String to, String otp) {
         try {
-            SendEmailRequest request = SendEmailRequest.builder()
-                    .from("onboarding@resend.dev")
-                    .to(to)
-                    .subject("Assessment Platform - OTP Verification")
-                    .text(
-                            "Your OTP code is: " + otp +
-                            "\n\nThis code will expire in 5 minutes." +
-                            "\n\nDo not share this code with anyone."
-                    )
-                    .build();
+            SimpleMailMessage message = new SimpleMailMessage();
 
-            SendEmailResponse response = resend.emails().send(request);
+            message.setFrom(fromAddress);
+            message.setTo(to);
+            message.setSubject("Assessment Platform - OTP Verification");
+            message.setText(
+                    "Your OTP code is: " + otp +
+                    "\n\nThis code will expire in 5 minutes." +
+                    "\n\nDo not share this code with anyone."
+            );
 
-            log.info("OTP email sent to: {}. Email ID: {}", to, response.getId());
+            mailSender.send(message);
+
+            log.info("OTP email sent successfully to: {}", to);
 
         } catch (Exception e) {
             log.error("Failed to send OTP email to {}", to, e);
@@ -50,31 +54,31 @@ public class EmailService {
             int totalMarks
     ) {
         try {
-            SendEmailRequest request = SendEmailRequest.builder()
-                    .from("onboarding@resend.dev")
-                    .to(to)
-                    .subject("Assessment Platform - Test Results: " + testTitle)
-                    .text(
-                            String.format(
-                                    "Dear %s,\n\n" +
-                                    "Your results for \"%s\" have been released.\n\n" +
-                                    "Score: %d / %d\n\n" +
-                                    "Regards,\nAssessment Platform",
-                                    userName,
-                                    testTitle,
-                                    score,
-                                    totalMarks
-                            )
-                    )
-                    .build();
+            SimpleMailMessage message = new SimpleMailMessage();
 
-            SendEmailResponse response = resend.emails().send(request);
-
-            log.info(
-                    "Result email sent to: {}. Email ID: {}",
-                    to,
-                    response.getId()
+            message.setFrom(fromAddress);
+            message.setTo(to);
+            message.setSubject(
+                    "Assessment Platform - Test Results: " + testTitle
             );
+
+            message.setText(
+                    String.format(
+                            "Dear %s,\n\n" +
+                            "Your results for \"%s\" have been released.\n\n" +
+                            "Score: %d / %d\n\n" +
+                            "Regards,\n" +
+                            "Assessment Platform",
+                            userName,
+                            testTitle,
+                            score,
+                            totalMarks
+                    )
+            );
+
+            mailSender.send(message);
+
+            log.info("Result email sent successfully to: {}", to);
 
         } catch (Exception e) {
             log.error("Failed to send result email to {}", to, e);
