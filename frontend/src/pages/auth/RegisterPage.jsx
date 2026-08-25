@@ -58,19 +58,12 @@ export default function RegisterPage() {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const res = await authService.register({
+      await authService.register({
         ...data,
         teamId: parseInt(data.teamId),
       });
-      const authData = res.data.data;
-      if (authData.requires2FA) {
-        toast.success('OTP sent to your email');
-        navigate('/verify-otp', { state: { email: data.email } });
-      } else {
-        login(authData);
-        toast.success('Registration successful!');
-        navigate(['ADMIN', 'TL', 'TR'].includes(authData.role) ? '/admin' : '/dashboard');
-      }
+      toast.success('Registration successful! Please sign in.');
+      navigate('/login');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
     } finally {

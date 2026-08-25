@@ -27,8 +27,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
-        String message = response.isRequires2FA() ? "OTP sent to your email" : "Login successful";
-        return ResponseEntity.ok(ApiResponse.success(message, response));
+        return ResponseEntity.ok(ApiResponse.success("Login successful", response));
     }
 
     @PostMapping("/verify-otp")

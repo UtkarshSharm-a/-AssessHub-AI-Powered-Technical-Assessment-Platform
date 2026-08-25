@@ -30,15 +30,9 @@ export default function LoginPage() {
     try {
       const res = await authService.login(data);
       const authData = res.data.data;
-
-      if (authData.requires2FA) {
-        navigate('/verify-otp', { state: { email: data.email } });
-        toast.success('OTP sent to your email');
-      } else {
-        login(authData);
-        toast.success('Login successful!');
-        navigate(['ADMIN', 'TL', 'TR'].includes(authData.role) ? '/admin' : '/dashboard');
-      }
+      login(authData);
+      toast.success('Login successful!');
+      navigate(['ADMIN', 'TL', 'TR'].includes(authData.role) ? '/admin' : '/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed');
     } finally {

@@ -12,13 +12,18 @@ export default function RoleProtectedRoute({ children, roles }) {
     );
   }
 
-  if (!user) {
+  if (!user || !user.role) {
     return <Navigate to="/login" replace />;
   }
 
   if (!roles.includes(user.role)) {
-    const isAdminLike = ['ADMIN', 'TL', 'TR'].includes(user.role);
-    return <Navigate to={isAdminLike ? '/admin' : '/dashboard'} replace />;
+    if (user.role === 'ADMIN') {
+      return <Navigate to="/admin" replace />;
+    }
+    if (['TRAINEE', 'INTERN', 'PPO', 'TL', 'TR'].includes(user.role)) {
+      return <Navigate to="/dashboard" replace />;
+    }
+    return <Navigate to="/login" replace />;
   }
 
   return children;

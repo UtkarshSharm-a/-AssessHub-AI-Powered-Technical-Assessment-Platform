@@ -7,7 +7,6 @@ import DashboardLayout from './layouts/DashboardLayout';
 
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import OtpPage from './pages/auth/OtpPage';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CreateTestPage from './pages/admin/CreateTestPage';
@@ -25,7 +24,7 @@ function HomeRedirect() {
   const { user, loading } = useAuth();
 
   if (loading) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user || !user.role) return <Navigate to="/login" replace />;
   if (user.role === 'ADMIN' || user.role === 'TL' || user.role === 'TR') {
     return <Navigate to="/admin" replace />;
   }
@@ -52,7 +51,6 @@ export default function App() {
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify-otp" element={<OtpPage />} />
 
           {/* Admin routes */}
           <Route
